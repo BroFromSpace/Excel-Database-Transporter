@@ -1,7 +1,6 @@
-import re
 import tkinter as tk
 from tkinter import messagebox as mb
-from typing import NoReturn, List
+from typing import NoReturn
 
 from main import get_part_list, copy_part
 
