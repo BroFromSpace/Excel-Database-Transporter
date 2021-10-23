@@ -12,12 +12,12 @@ class App:
 
         self.root = tk.Tk()
         self.root.title("xlsx app")
-        self.root.geometry("480x360")
+        self.root.geometry("480x400")
 
         top_frame = tk.Frame(self.root, width=480, height=100)  # top frame for additional information
         top_frame.pack(fil=tk.Y, expand=True)
 
-        main_frame = tk.Frame(self.root, width=480, height=160)  # main frame for input fields
+        main_frame = tk.Frame(self.root, width=480, height=200)  # main frame for input fields
         main_frame.pack(fill=tk.Y, expand=True)
 
         bottom_frame = tk.Frame(self.root, width=480, height=100)  # bottom frame for submit and exit buttons
@@ -27,7 +27,7 @@ class App:
         app_info_label = tk.Label(
             top_frame,
             text="Enter product name and click submit button,\n or if you want to exit application press exit button",
-            font=20,
+            font=("Arial", 14),
             justify=tk.CENTER,
             padx=10,
             pady=10
@@ -38,7 +38,7 @@ class App:
         part_name_label = tk.Label(
             main_frame,
             text="Enter product name",
-            font=20,
+            font=("Arial", 12),
             justify=tk.CENTER,
             padx=10,
             pady=10
@@ -52,10 +52,27 @@ class App:
         )
         self.part_name_entry.grid()
 
+        part_number_label = tk.Label(
+            main_frame,
+            text="Enter part number",
+            font=("Arial", 12),
+            justify=tk.CENTER,
+            padx=10,
+            pady=10
+        )
+        part_number_label.grid()
+
+        self.part_number_entry = tk.Entry(
+            main_frame,
+            font=("Arial", 12),
+            width=35
+        )
+        self.part_number_entry.grid()
+
         part_count_label = tk.Label(
             main_frame,
             text="Enter number of parts you want to copy",
-            font=20,
+            font=("Arial", 12),
             justify=tk.CENTER,
             padx=10,
             pady=10
@@ -64,7 +81,7 @@ class App:
 
         self.part_count_entry = tk.Entry(
             main_frame,
-            font=20,
+            font=("Arial", 12),
             width=15
         )
         self.part_count_entry.grid()
@@ -73,7 +90,7 @@ class App:
         exit_btn = tk.Button(
             bottom_frame,
             text="Exit",
-            font=20,
+            font=("Arial", 12),
             width=10,
             height=1,
             command=lambda: self.exit()
@@ -83,7 +100,7 @@ class App:
         submit_btn = tk.Button(
             bottom_frame,
             text="Submit",
-            font=20,
+            font=("Arial", 12),
             width=10,
             height=1,
             command=lambda: self.check_part_in_list()
@@ -104,6 +121,10 @@ class App:
         part_name = part_name.lower().strip()
         if part_name in self.part_names_list:
             # get number of parts
+            part_number = self.part_number_entry.get()
+            if not part_number:
+                mb.showwarning(title="Warning", message="Part number field is required!")
+                return
             try:
                 part_count = self.part_count_entry.get()
                 part_count = (int(part_count) if int(part_count)!=0 else 1) if part_count else 1
@@ -112,10 +133,11 @@ class App:
                 mb.showwarning(title="Warning", message="Enter the valid number of parts you want to copy!")
             else:
                 # copy row from start excel file to new
-                if copy_part(self.part_list[self.part_names_list.index(part_name)], part_count):
+                if copy_part(self.part_list[self.part_names_list.index(part_name)], part_number, part_count):
                     # show info about successful copying
                     mb.showinfo(title="Success", message="Data was successfully copied!")
                     self.part_name_entry.delete(0, tk.END)
+                    self.part_number_entry.delete(0, tk.END)
                     self.part_count_entry.delete(0, tk.END)
                 else:
                     # show error about unsuccessful copying
